@@ -91,12 +91,12 @@ def PassDecrypt(password, key_from_mRemNG='mR3m'):
     nonce = encrypted_data[16:32]
     ciphertext = encrypted_data[32:-16]
     tag = encrypted_data[-16:]
-    key = hashlib.pbkdf2_hmac("sha1", key_from_mRemNG.encode(), salt, 1000, dklen=32)
+    key = hashlib.pbkdf2_hmac("SHA-1", key_from_mRemNG.encode(), salt, 1000, dklen=32)
     
     cipher = Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_GCM, nonce=nonce)
     cipher.update(associated_data)
     plaintext = cipher.decrypt_and_verify(ciphertext, tag)
-    return plaintext.decode("utf-8")
+    return plaintext.decode("UTF-8")
 
 
 def recursion_for_get_group_name(cur_group_name, cur_xml_node):
@@ -159,7 +159,7 @@ def main():
     mRemoteNG_filename = ParceArgs()
 
     if not os.path.isdir(dir_remmina):
-        sys.stderr.write("Remmina dir doesn't exists. I'm exiting without taking action.\n")
+        sys.stderr.write("Remmina dir doesn't exist. Exiting without taking action.\n")
         sys.exit(2)
     register_files_from_remmina()
                
@@ -167,27 +167,27 @@ def main():
     root = tree.getroot()
 
     if root.attrib["EncryptionEngine"] != "AES" or root.attrib["BlockCipherMode"] != "GCM":
-        sys.stderr.write("Unknown Encoding Type! I'm exiting without taking action.\n")
+        sys.stderr.write("Unknown Encoding Type! Exiting without taking action.\n")
         sys.exit(3)
     
     if PassDecrypt(root.attrib["Protected"]) != 'ThisIsNotProtected':
-        sys.stderr.write("Warning attrib Protected. Incorrect password decryption possible. I'm exiting without taking action.\n")
+        sys.stderr.write("Warning attrib Protected. It is possible the password wasn't decrypted correctly. Exiting without taking action.\n")
         sys.exit(4)
     
     recursion_for_get_group_name([], root)
 
-    sys.stdout.write("AllOK\n")
+    sys.stdout.write("All OK\n")
     sys.exit(0)
 
 
 def ParceArgs():
-    parser = argparse.ArgumentParser(description="""This is converter between Remmina and mRemoteNG. 
-Right now, only importing SSH2 connections with passwords into Remmina is implemented.
-This program should be running on a host with the target Remmina.
+    parser = argparse.ArgumentParser(description="""This is a converter between Remmina and mRemoteNG. 
+Right now, only importing SSH-2 connections with passwords into Remmina is implemented.
+This program should be running on the host that has the target Remmina installation.
 IMPORTANT - You can import one file multiple times. They will be merged by group and connection name""",
 formatter_class=argparse.RawDescriptionHelpFormatter)
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("-f", "--file", help="XML file name exported from program mRemoteNG")
+    group.add_argument("-f", "--file", help="XML file name exported from the mRemoteNG program")
     
     if len(sys.argv) < 2:
         parser.print_help(sys.stderr)
@@ -196,12 +196,12 @@ formatter_class=argparse.RawDescriptionHelpFormatter)
     args = parser.parse_args()
     if args.file != None:
         if not os.path.isfile(args.file):
-            sys.stderr.write("File \"{}\" doesn't exists\n".format(args.file))
+            sys.stderr.write("The file \"{}\" doesn't exist\n".format(args.file))
             sys.exit(1)
             
         return args.file
     else:
-        sys.stderr.write("Please use with the file (-f, --file) flag\n")
+        sys.stderr.write("Please use the (-f, --file) flag with accompanying file\n")
         sys.exit(1)
 
 
