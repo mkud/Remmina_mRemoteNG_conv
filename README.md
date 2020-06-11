@@ -15,3 +15,7 @@ _Remmina <=== (SSH-2 connections with passwords) === mRemoteNG_
 This program should be running on the host that has target Remmina installation. The program adds info about the connections to the added to Remmina. Importing data into Remmina via the interface is not necessary.
 
 You can import one file multiple times. Connections will be merged by group and connection name.
+
+# Important
+
+You should run this script from your current user, without `sudo`. Otherwise, passwords may be saved for `root` but not for you.

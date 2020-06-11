@@ -15,6 +15,17 @@ import argparse
 import hashlib
 import base64
 
+if os.getuid() == 0:
+    print("""It looks like you ran this script under 'sudo'.
+this is usually not a good idea. You should run the script from your current user.
+Otherwise, passwords may be saved for 'root' but not for you.
+
+Do you really want to continue? (y/N) """, end='')
+    ret = input()
+    if ret.lower() not in ['y', 'ye', 'yes']:
+        print("Than exiting without saving changes")
+        sys.exit(10)
+
 not_existing_imports = []
 try:
     import secretstorage
@@ -35,8 +46,13 @@ to install all the necessary dependencies
 """.format(" ".join(not_existing_imports)))
     sys.exit(1)
 
-connection = secretstorage.dbus_init()
-collection = secretstorage.get_default_collection(connection)
+try:
+    connection = secretstorage.dbus_init()
+    collection = secretstorage.get_default_collection(connection)
+except:
+    print("\nERROR!!! It looks like you don’t have access to the password store. Perhaps you did not enter a name and/or password to unlock it.")
+    print("Restart the script to try again. Exiting!")
+    sys.exit(11)
 
 default = {'ssh_auth': '0',
 'ssh_password': '.',
