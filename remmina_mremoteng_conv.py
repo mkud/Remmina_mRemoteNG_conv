@@ -91,7 +91,7 @@ def PassDecrypt(password, key_from_mRemNG='mR3m'):
     nonce = encrypted_data[16:32]
     ciphertext = encrypted_data[32:-16]
     tag = encrypted_data[-16:]
-    key = hashlib.pbkdf2_hmac("SHA-1", key_from_mRemNG.encode(), salt, 1000, dklen=32)
+    key = hashlib.pbkdf2_hmac("sha1", key_from_mRemNG.encode(), salt, 1000, dklen=32)
     
     cipher = Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_GCM, nonce=nonce)
     cipher.update(associated_data)
