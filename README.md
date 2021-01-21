@@ -10,7 +10,7 @@ _Remmina <=== (SSH-2 connections with passwords) === mRemoteNG_
 
 # How to use
 
-`python3 -f <XML file exported from the mRemoteNG>`
+`python3 remmina_mremoteng_conv.py -f <XML file exported from the mRemoteNG>`
 
 This program should be running on the host that has target Remmina installation. The program adds info about the connections to the added to Remmina. Importing data into Remmina via the interface is not necessary.
 
